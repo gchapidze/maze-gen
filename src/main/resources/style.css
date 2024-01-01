@@ -1,0 +1,23 @@
+.slider {
+    -fx-pref-width: 400px;
+}
+
+.slider .axis { -fx-tick-label-fill: white; }
+
+.slider .track {
+    -fx-background-color: linear-gradient(to left, purple, mediumpurple);
+    -fx-background-radius: 0;
+}
+
+.slider .thumb {
+    -fx-pref-height: 22px;
+    -fx-pref-width: 8px;
+    -fx-background-color: linear-gradient(to top, royalblue, aquamarine);
+    -fx-background-radius: 0;
+}
+
+.button {
+    -fx-background-color: #9400D3;
+    -fx-text-fill: white;
+    -fx-font-size: 12px
+}
