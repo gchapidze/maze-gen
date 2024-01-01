@@ -3,13 +3,11 @@ package com.gen.maze;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
@@ -25,26 +23,24 @@ public class GView {
     private final MediaPlayer media = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/click-21156.mp3")).toExternalForm()));
     private final SimpleBooleanProperty buttonDisableProperty = new SimpleBooleanProperty(false);
     private final SimpleDoubleProperty animationDelayProperty = new SimpleDoubleProperty(10);
-    private final Button btnRecursiveBacktracking;
+    protected final Button btnBacktracking;
     private final AnchorPane rectGridPane;
-    private final Button btnKruskalMST;
-    private final Button btnPrimMST;
+    protected final Button btnKruskalMST;
+    protected final Button btnBinaryTree;
+    protected final Button btnPrimMST;
     private final BorderPane root;
-    private final VBox optionVBox;
+    private final VBox algorithmVBox;
     private final Slider slider;
 
     public GView() {
         root = new BorderPane();
         rectGridPane = new AnchorPane();
-        optionVBox = new VBox();
+        algorithmVBox = new VBox();
         slider = new Slider();
-        btnRecursiveBacktracking = new Button("➰ Backtracking");
+        btnBinaryTree = new Button("\uD83C\uDF33 BinaryTree");
         btnKruskalMST = new Button("\uD83C\uDF32 Kruskal's");
+        btnBacktracking = new Button("➰ Backtracking");
         btnPrimMST = new Button("\uD83C\uDF42 Prim's");
-
-        btnRecursiveBacktracking.disableProperty().bind(buttonDisableProperty);
-        btnKruskalMST.disableProperty().bind(buttonDisableProperty);
-        btnPrimMST.disableProperty().bind(buttonDisableProperty);
 
         root.setStyle("-fx-background-color: BLACK");
 
@@ -54,10 +50,11 @@ public class GView {
 
     private void setUserControls() {
         // Buttons
-        optionVBox.setSpacing(5.0d);
-        optionVBox.setPadding(new Insets(30.0d, 10.0d, 0, 10.0d));
-        optionVBox.getChildren().addAll(btnRecursiveBacktracking, btnKruskalMST, btnPrimMST);
-        root.setRight(optionVBox);
+        algorithmVBox.setSpacing(5.0d);
+        algorithmVBox.setPadding(new Insets(30.0d, 10.0d, 0, 10.0d));
+        algorithmVBox.getChildren().addAll(btnBacktracking, btnBinaryTree, btnKruskalMST, btnPrimMST);
+        algorithmVBox.getChildren().forEach(v -> v.disableProperty().bind(buttonDisableProperty));
+        root.setRight(algorithmVBox);
 
         // Slider
         var sliderPane = configSliderPane();
@@ -98,6 +95,7 @@ public class GView {
 
     private Rectangle getRectangle(int x, int y) {
         Rectangle rect = new Rectangle(GApp.Scale_X, GApp.Scale_Y);
+        rect.setStrokeWidth(2.5);
         rect.setStroke(Color.MEDIUMPURPLE);
         rect.setX(x);
         rect.setY(y);
@@ -105,15 +103,15 @@ public class GView {
         return rect;
     }
 
-    protected void setBtnBacktrackingHandler(EventHandler<MouseEvent> e) {
-        btnRecursiveBacktracking.setOnMouseClicked(e);
-    }
-
-    protected Region getView() {
+    protected Region getRoot() {
         return root;
     }
 
-    public ObservableList<Node> getChildren() {
+    protected VBox getAlgorithmVBox() {
+        return algorithmVBox;
+    }
+
+    protected ObservableList<Node> getChildren() {
         return rectGridPane.getChildren();
     }
 

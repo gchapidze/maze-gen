@@ -4,6 +4,7 @@ import com.gen.maze.data.Cell;
 import com.gen.maze.data.Dim;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -23,11 +24,13 @@ public class GController {
         model = new GModel();
         view = new GView();
 
-        view.setBtnBacktrackingHandler(this::startBacktrackingAlgorithm);
+        view.getAlgorithmVBox().getChildren().forEach(btn -> btn.setOnMouseClicked(this::startAlgorithm));
     }
 
-    private void startBacktrackingAlgorithm(MouseEvent e) {
-        precondition();
+    private void startAlgorithm(MouseEvent e) {
+        view.getChildren().clear();
+        view.drawGrid();
+        view.soundBtnClick();
 
         Thread.ofPlatform().start(new Task<Void>() {
             @Override
@@ -36,7 +39,19 @@ public class GController {
 
                 int y = model.getCells().length;
                 int x = model.getCells()[0].length;
-                iterativeBacktrackingAlgorithm(new boolean[y][x], new SecureRandom());
+
+                if (e.getSource() instanceof Button btn) {
+                    if (btn == view.btnBacktracking) {
+                        iterativeBacktracking(new boolean[y][x], new SecureRandom());
+                    } else if (btn == view.btnKruskalMST) {
+                        // TODO
+                    } else if (btn == view.btnPrimMST) {
+                        // TODO
+                    } else if (btn == view.btnBinaryTree) {
+                        binaryTree(y, x, new SecureRandom());
+                    }
+                }
+
 
                 view.buttonDisablePropertyProperty().set(false);
                 return null;
@@ -44,17 +59,35 @@ public class GController {
         });
     }
 
-    private void precondition() {
-        view.getChildren().clear();
-        view.drawGrid();
-        view.soundBtnClick();
+    private void binaryTree(int y, int x, SecureRandom flip) {
+        for (int j = 0; j < y; j++) {
+            for (int i = 0; i < x; i++) {
+                animateWalk(model.getCells()[j][i]);
+
+                if (j - 1 >= 0 && i + 1 < x) {// 2 ways
+                    var value = flip.nextInt(2);
+                    if (value == 0) {
+                        removeWall(model.getCells()[j][i].getUpWall());
+                    } else {
+                        removeWall(model.getCells()[j][i].getRightWall());
+                    }
+                } else if (j - 1 >= 0) { // north
+                    removeWall(model.getCells()[j][i].getUpWall());
+                } else if (i + 1 < x) { // east
+                    removeWall(model.getCells()[j][i].getRightWall());
+                }
+
+                pause();
+                deAnimateWalk(model.getCells()[j][i]);
+            }
+        }
     }
 
     public Region getView() {
-        return view.getView();
+        return view.getRoot();
     }
 
-    private void iterativeBacktrackingAlgorithm(boolean[][] visited, SecureRandom random) {
+    private void iterativeBacktracking(boolean[][] visited, SecureRandom random) {
         Deque<Cell> stack = new ArrayDeque<>();
 
         stack.push(model.getCells()[0][0]);
@@ -62,8 +95,7 @@ public class GController {
 
         while (!stack.isEmpty()) {
             Cell C_C = stack.pop();// C_C(Current Cell)
-            var r = (Rectangle) view.getChildren().get(C_C.getX() + C_C.getY() * model.getCells()[0].length);
-            r.setFill(Color.BLUEVIOLET);
+            animateWalk(C_C);
 
 
             List<Cell> U_NCS = C_C.getAdjacentCells().stream().filter(neighbor -> !visited[neighbor.getY()][neighbor.getX()]).toList();
@@ -77,16 +109,26 @@ public class GController {
 
                 stack.push(U_NC);
 
-                wait_((int) view.animationDelayPropertyProperty().get() * 10);
+                pause();
             }
 
-            r.setFill(Color.BLACK);
+            deAnimateWalk(C_C);
         }
     }
 
-    public void wait_(int millis) {
+    private void deAnimateWalk(Cell C_C) {
+        var r = (Rectangle) view.getChildren().get(C_C.getX() + C_C.getY() * model.getCells()[0].length);
+        r.setFill(Color.BLACK);
+    }
+
+    private void animateWalk(Cell C_C) {
+        var r = (Rectangle) view.getChildren().get(C_C.getX() + C_C.getY() * model.getCells()[0].length);
+        r.setFill(Color.BLUEVIOLET);
+    }
+
+    public void pause() {
         try {
-            Thread.sleep(millis);
+            Thread.sleep((int) view.animationDelayPropertyProperty().get() * 10L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -105,10 +147,11 @@ public class GController {
         }
     }
 
-    private void removeWall(Dim upWall) {
-        var removedWall = new Line(upWall.x1(), upWall.y1(), upWall.x2(), upWall.y2());
-        removedWall.setStroke(Color.BLACK);
+    private void removeWall(Dim wall) {
+        var line = new Line(wall.x1(), wall.y1(), wall.x2(), wall.y2());
+        line.setStroke(Color.BLACK);
+        line.setStrokeWidth(2.5);
 
-        Platform.runLater(() -> view.getChildren().add(removedWall));
+        Platform.runLater(() -> view.getChildren().add(line));
     }
 }
