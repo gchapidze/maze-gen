@@ -4,14 +4,13 @@ Welcome to the Maze Generation Algorithms Visualizer project! This Java applicat
 
 ## Features
 
-- **Algorithm Selection**: Choose from various maze generation algorithms, including Recursive Backtracking, Kruskal's MST, and Prim's MST.
-
+- **Algorithm Selection**: Choose from various maze generation algorithms, including Backtracking, BinaryTree, Kruskal's MST and more.
+ 
 - **Interactive Execution**: Simply click on the desired algorithm from the list, and watch as the maze is generated in real-time.
 
-- **Grid Reset**: After running an algorithm, you can easily reset the grid to explore and compare the results of different algorithms.
+- **Speed Control**: The slider allows you to change the execution speed from fastest to slowest.. 
 
-
-<img width="732" alt="Screenshot 2023-12-14 154427" src="https://github.com/gchapidze/maze-gen/assets/118893979/d4e22455-55fb-43d7-8486-ee09102b2a0e">
+<img width="681" alt="Screenshot 2024-01-02 151853" src="https://github.com/gchapidze/maze-gen/assets/118893979/3b1761c9-70bc-4dbd-8b71-eef5f2e41362">
 
 ## Getting Started
 
@@ -21,16 +20,19 @@ Welcome to the Maze Generation Algorithms Visualizer project! This Java applicat
 
 ## Supported Algorithms
 
-1. **Recursive Backtracking**
+1. **Iterative Backtracking**
    - This algorithm utilizes a recursive approach to carve paths through the maze.
 
-2. **Kruskal's Minimum Spanning Tree (MST)**
+2. **Binary Tree**
+   - It constructs a maze resembling a tree by flipping a coin to determine whether to add a passageway going up or right for each cell.
+
+3. **Kruskal's Minimum Spanning Tree (MST)**
    - Kruskal's algorithm constructs a minimum spanning tree of the maze, creating a perfect maze with no loops.
 
 3. **Prim's Minimum Spanning Tree (MST)**
    - Prim's algorithm also generates a minimum spanning tree, starting from a random cell and growing the maze outward.
 
-<img width="734" alt="Screenshot 2023-12-14 154449" src="https://github.com/gchapidze/maze-gen/assets/118893979/878129f7-6b19-47a6-88a3-44f213fb6f43">
+<img width="680" alt="Screenshot 2024-01-02 151751" src="https://github.com/gchapidze/maze-gen/assets/118893979/74b6c135-4d37-4541-9765-80d88e3cf5d8">
 
 ## Contributing
 
